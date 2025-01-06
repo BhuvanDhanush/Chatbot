@@ -9,6 +9,44 @@ import random
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 
+# Set Streamlit theme and enhance the UI
+st.set_page_config(page_title="Chatbot", page_icon="🤖", layout="wide", initial_sidebar_state="expanded")
+
+# Styling elements
+st.markdown(
+    """
+    <style>
+    .main { 
+        font-family: 'Arial', sans-serif;
+        background-color: #f0f2f6;
+    }
+    .stTextInput>div>input {
+        font-size: 18px;
+    }
+    .stTextArea>div>textarea {
+        font-size: 18px;
+        color: #333;
+    }
+    .sidebar .sidebar-content {
+        background-color: #003366;
+        color: white;
+    }
+    .stButton>button {
+        background-color: #4CAF50;
+        color: white;
+        font-size: 18px;
+    }
+    .stButton>button:hover {
+        background-color: #45a049;
+    }
+    .stMarkdown {
+        font-size: 16px;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 ssl._create_default_https_context = ssl._create_unverified_context
 nltk.data.path.append(os.path.abspath("nltk_data"))
 nltk.download('punkt')
@@ -30,7 +68,7 @@ for intent in intents:
         tags.append(intent['tag'])
         patterns.append(pattern)
 
-# training the model
+# Training the model
 x = vectorizer.fit_transform(patterns)
 y = tags
 clf.fit(x, y)
@@ -42,12 +80,12 @@ def chatbot(input_text):
         if intent['tag'] == tag:
             response = random.choice(intent['responses'])
             return response
-        
+
 counter = 0
 
 def main():
     global counter
-    st.title("Intents of Chatbot using NLP")
+    st.title("🤖 Chatbot using NLP")
 
     # Create a sidebar menu with options
     menu = ["Home", "Conversation History", "About"]
@@ -56,6 +94,7 @@ def main():
     # Home Menu
     if choice == "Home":
         st.write("Welcome to the chatbot. Please type a message and press Enter to start the conversation.")
+        st.write("###")
 
         # Check if the chat_log.csv file exists, and if not, create it with column names
         if not os.path.exists('chat_log.csv'):
@@ -90,7 +129,6 @@ def main():
     elif choice == "Conversation History":
         # Display the conversation history in a collapsible expander
         st.header("Conversation History")
-        # with st.beta_expander("Click to see Conversation History"):
         with open('chat_log.csv', 'r', encoding='utf-8') as csvfile:
             csv_reader = csv.reader(csvfile)
             next(csv_reader)  # Skip the header row
@@ -101,32 +139,29 @@ def main():
                 st.markdown("---")
 
     elif choice == "About":
-        st.write("The goal of this project is to create a chatbot that can understand and respond to user input based on intents. The chatbot is built using Natural Language Processing (NLP) library and Logistic Regression, to extract the intents and entities from user input. The chatbot is built using Streamlit, a Python library for building interactive web applications.")
+        st.write("### About the Chatbot Project")
+        st.write("The goal of this project is to create a chatbot that can understand and respond to user input based on intents. The chatbot is built using Natural Language Processing (NLP) library and Logistic Regression to extract the intents and entities from user input. The chatbot is built using Streamlit, a Python library for building interactive web applications.")
 
         st.subheader("Project Overview:")
-
         st.write("""
         The project is divided into two parts:
-        1. NLP techniques and Logistic Regression algorithm is used to train the chatbot on labeled intents and entities.
+        1. NLP techniques and Logistic Regression algorithm are used to train the chatbot on labeled intents and entities.
         2. For building the Chatbot interface, Streamlit web framework is used to build a web-based chatbot interface. The interface allows users to input text and receive responses from the chatbot.
         """)
 
         st.subheader("Dataset:")
-
         st.write("""
-        The dataset used in this project is a collection of labelled intents and entities. The data is stored in a list.
-        - Intents: The intent of the user input (e.g. "greeting", "budget", "about")
-        - Entities: The entities extracted from user input (e.g. "Hi", "How do I create a budget?", "What is your purpose?")
-        - Text: The user input text.
+        The dataset used in this project is a collection of labeled intents and entities. The data is stored in a list.
+        - **Intents**: The intent of the user input (e.g., "greeting", "budget", "about")
+        - **Entities**: The entities extracted from user input (e.g., "Hi", "How do I create a budget?", "What is your purpose?")
+        - **Text**: The user input text.
         """)
 
         st.subheader("Streamlit Chatbot Interface:")
-
         st.write("The chatbot interface is built using Streamlit. The interface includes a text input box for users to input their text and a chat window to display the chatbot's responses. The interface uses the trained model to generate responses to user input.")
 
         st.subheader("Conclusion:")
-
-        st.write("In this project, a chatbot is built that can understand and respond to user input based on intents. The chatbot was trained using NLP and Logistic Regression, and the interface was built using Streamlit. This project can be extended by adding more data, using more sophisticated NLP techniques, deep learning algorithms.")
+        st.write("In this project, a chatbot is built that can understand and respond to user input based on intents. The chatbot was trained using NLP and Logistic Regression, and the interface was built using Streamlit. This project can be extended by adding more data and using more sophisticated NLP techniques or deep learning algorithms.")
 
 if __name__ == '__main__':
     main()
